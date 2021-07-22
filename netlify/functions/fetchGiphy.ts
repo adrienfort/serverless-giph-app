@@ -1,7 +1,7 @@
 import { Handler } from '@netlify/functions';
 import fetch from 'node-fetch';
 
-const API_KEY = 'hh2nfHxPGV9o9hP9XO021o1P1VWSudSf';
+const API_KEY = process.env.REACT_APP_GIPHY_API_KEY;
 
 const handler: Handler = async (event) => {
 	const { input } = event.queryStringParameters! || 'Homer';
