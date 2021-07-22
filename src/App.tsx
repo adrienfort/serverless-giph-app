@@ -1,12 +1,36 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
-import { Box, Center, Input, Text } from '@chakra-ui/react';
+import { Box, Center, Grid, Input, Text } from '@chakra-ui/react';
+
+type GifType = {
+	id: string;
+	embed_url: string;
+};
+
+const GifCard = ({ URL }: { URL: string }): JSX.Element => <iframe title={URL} src={URL} allowFullScreen />;
 
 const App = (): JSX.Element => {
-	const fetchGifs = (event: ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		console.log(value);
-	};
+	const [input, setInput] = useState('');
+	const [gifs, setGifs] = useState<GifType[]>([]);
+
+	useEffect(() => {
+		const fetchGiphy = () => {
+			fetch(`.netlify/functions/fetchGiphy/?input=${input}`)
+				.then((response) => response.json())
+				.then((data) => {
+					console.log(data);
+					setGifs(data.data);
+				});
+		};
+
+		const timer = setTimeout(() => {
+			fetchGiphy();
+		}, 700);
+
+		return () => {
+			clearTimeout(timer);
+		};
+	}, [input]);
 
 	return (
 		<Box w="100%" h="100%" bg="black">
@@ -18,12 +42,13 @@ const App = (): JSX.Element => {
 					fontWeight="extrabold"
 					fontSize="32px"
 				>
-					Serverless Giphs App
+					Serverless Gifs App
 				</Text>
 			</Center>
 			<Center>
 				<Input
-					onChange={(event) => fetchGifs(event)}
+					onChange={(event) => setInput(event.target.value)}
+					value={input}
 					mt="48px"
 					w="90%"
 					maxW="600px"
@@ -32,6 +57,13 @@ const App = (): JSX.Element => {
 					focusBorderColor="green.300"
 					placeholder="search gifs"
 				/>
+			</Center>
+			<Center>
+				<Grid mt="80px" templateColumns="repeat(3, 1fr)" gap={8}>
+					{gifs.map((gif) => (
+						<GifCard key={gif.id} URL={gif.embed_url} />
+					))}
+				</Grid>
 			</Center>
 		</Box>
 	);
