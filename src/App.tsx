@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Box, Center, Grid, Input, Text } from '@chakra-ui/react';
 
