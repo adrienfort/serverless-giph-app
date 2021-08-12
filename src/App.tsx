@@ -19,14 +19,7 @@ const App = (): JSX.Element => {
 				.then((response) => response.json())
 				.then((data) => setGifs(data.data));
 		};
-
-		const timer = setTimeout(() => {
-			fetchGiphy();
-		}, 700);
-
-		return () => {
-			clearTimeout(timer);
-		};
+		fetchGiphy();
 	}, [input]);
 
 	return (
